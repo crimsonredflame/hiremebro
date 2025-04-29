@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import base64
-from helpers import parse_cv, extract_keywords
 
 # -------------------- CONFIG -------------------
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -13,14 +12,67 @@ st.set_page_config(page_title="HireMeBro 🚀", layout="centered")
 def set_bg_from_local(image_file):
     with open(image_file, "rb") as file:
         encoded = base64.b64encode(file.read()).decode()
+    # background = f"""
+    # <style>
+    # .stApp {{
+    #     background-image: url("data:image/jpg;base64,{encoded}");
+    #     background-size: cover;
+    #     background-position: center;
+    #     background-repeat: no-repeat;
+    #     background-attachment: fixed;
+    # }}
+    # </style>
+    # """
     background = f"""
     <style>
     .stApp {{
-        background-image: url("data:image/jpg;base64,{encoded}");
+        background-color: #1e1e2f;
+        background-image: url("https://imgs.search.brave.com/PNC_0rXuCK5ost__auBsZvn3zk7rJ02Qxj4bGOzfkqk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1Lzc5LzQ4LzUy/LzM2MF9GXzU3OTQ4/NTI1NV9oekhveDBz/dHVRbUJ4NVFWaXdu/UXFRams3UkQyQUp6/YS5qcGc");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        color: #f5f5f5;
+    }}
+    .stMarkdown h1 {{
+        color: #333333;
+        text-shadow: 1px 1px 2px #aaaaaa;
+    }}
+    .stMarkdown h4 {{
+        color: #ff007f;
+    }}
+    .stButton button {{
+        background-color: #ff007f;
+        color: white;
+        border: 2px solid #ff007f;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: 0.3s;
+    }}
+    .stButton button:hover {{
+        background-color: #1e1e2f;
+        color: #ff007f;
+        border: 2px solid #ff007f;
+    }}
+    .stTextArea textarea {{
+        background-color: #2e2e3f;
+        color: #f5f5f5;
+        border: 1px solid #ff007f;
+    }}
+    .stDownloadButton button {{
+        background-color: #ff007f;
+        color: white;
+        border: 2px solid #ff007f;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: 0.3s;
+    }}
+    .stDownloadButton button:hover {{
+        background-color: #1e1e2f;
+        color: #ff007f;
+        border: 2px solid #ff007f;
     }}
     </style>
     """
@@ -29,6 +81,18 @@ def set_bg_from_local(image_file):
 set_bg_from_local("img6.jpg")
 
 # ----------------- FUNCTIONS -------------------
+
+def parse_cv(file_path):
+    # Example implementation for parsing CV
+    # with open(file_path, 'r') as file:
+    #     return file.read()
+    with open(file_path, 'r', encoding='utf-8', errors='replace') as file:
+        return file.read()
+
+
+def extract_keywords(text):
+    # Example implementation for extracting keywords
+    return list(set(text.split()))[:10]  # Return the first 10 unique words as keywords
 
 def fetch_remotive_jobs(keywords, limit=10):
     jobs = []
@@ -105,14 +169,22 @@ def main():
             font-size: 3.5em;
             background: linear-gradient(to right, #0f2027, #203a43, #2c5364); 
             -webkit-background-clip: text;
-            color: white;
+            color: #333333;
             font-family: 'Segoe UI', 'Roboto', sans-serif;
-            text-shadow: 1px 1px 2px #000000;
+            text-shadow: 1px 1px 2px #aaaaaa;
             animation: fadeIn 2s;
         ">
             HireMeBro
         </h1>
-        <p style='font-size: 1.2em; color: #555;'>Your AI-powered bestie for job hunting </p>
+        <p style="font-size: 1.2em;
+    color: #333333;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    text-shadow: 1px 1px 2px #ffffff; 
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 10px;">Your AI-powered bestie for job hunting </p>
     </div>
 
     <style>
@@ -123,7 +195,7 @@ def main():
     </style>
 """, unsafe_allow_html=True)
 
-    st.markdown("### Upload Your CV")
+    st.markdown("<h3 style='color: #333333;'>Upload Your CV</h3>", unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Drop your CV here 👇", type=["pdf"])
 
     if uploaded_file:
